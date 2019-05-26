@@ -1,0 +1,8 @@
+feelings_gain (How strong the feelings should be) float 1.0
+feelings_max_hear_distance (How far the feelings reach out) int 10
+feelings_nodes_feel_punches (Nodes feel punches) bool false
+feelings_nodes_death_behavior (How nodes should behave when they're dug) enum Nothing Nothing,AdditionalFeeling,AlwaysAdditionalFeeling,InstantlyStopFeeling
+feelings_players_feel_hp_loss (Players feel hp loss) bool true
+feelings_players_death_behavior (How players should behave when they die) enum AdditionalFeeling Nothing,AdditionalFeeling,AlwaysAdditionalFeeling,InstantlyStopFeelingInstantlyStopFeeling
+feelings_entities_feel_punches (Makes all entities feel punches) bool true
+feelings_entities_death_behavior (Defines the death behavior for all entities) enum AdditionalFeeling Nothing,AdditionalFeeling,AlwaysAdditionalFeeling,InstantlyStopFeeling

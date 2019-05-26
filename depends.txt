@@ -1,0 +1,5 @@
+default
+mobs_monster?
+mobs_npc?
+mobs_animal?
+mobs_horse?
