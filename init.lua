@@ -1,6 +1,8 @@
+local DEFAUTLT_DEATH_BEHAVIOR = "AdditionalFeeling"
+
 local path = minetest.get_modpath("feelings")
 
-dofile(path .. "/random.lua")
+dofile(path .. "/hash.lua")
 dofile(path .. "/feelings.lua")
 dofile(path .. "/override.lua")
 
@@ -47,7 +49,7 @@ if minetest.settings:get_bool("feelings_nodes_feel_punches", false) then
     end)
 end
 
-minetest.register_on_dignode(death_behaviors.nodes[minetest.settings:get("feelings_nodes_death_behavior")])
+minetest.register_on_dignode(death_behaviors.nodes[minetest.settings:get("feelings_nodes_death_behavior") or DEFAUTLT_DEATH_BEHAVIOR])
 
 if minetest.settings:get_bool("feelings_players_feel_hp_loss", true) then
     minetest.register_on_player_hpchange(function (player, hp_change)
@@ -57,11 +59,19 @@ if minetest.settings:get_bool("feelings_players_feel_hp_loss", true) then
     end, false)
 end
 
-minetest.register_on_dieplayer(death_behaviors.players[minetest.settings:get("feelings_players_death_behavior")])
+minetest.register_on_dieplayer(death_behaviors.players[minetest.settings:get("feelings_players_death_behavior") or DEFAUTLT_DEATH_BEHAVIOR])
+
+local blacklisted_entities = {} -- these entities aren't allowed to have feelings
+blacklisted_entities["__builtin:item"] = true -- dropped item stack
+blacklisted_entities["__builtin:falling_node"] = true -- falling block
+
+local whitelisted_entities = {} -- these entities must have feelings (cause I want them to)
+whitelisted_entities["carts:cart"] = true -- carts are not physical (https://github.com/minetest/minetest_game/blob/c284e52963ee78afda8f12bbaf915c55df2eb3d1/mods/carts/cart_entity.lua#L3), so I have to whitelist them here
+
 
 local function chain_feeling_functions(predicate, feelings_trigger, feel)
     for name, entity in pairs(minetest.registered_entities) do
-        if predicate(name, entity) then
+        if whitelisted_entities[name] or (predicate(name, entity) and not blacklisted_entities[name] and entity.physical) then -- only physical entities should have these kind of physical feelings
             local definition = {}
 
             definition[feelings_trigger] = {
@@ -77,7 +87,9 @@ local function chain_feeling_functions(predicate, feelings_trigger, feel)
 end
 
 if minetest.settings:get_bool("feelings_entities_feel_punches", true) then
-    chain_feeling_functions(function(_,e) return e.on_punch ~= nil end, "on_punch", entity_feeling) 
+    chain_feeling_functions(function(_,e) return e.on_punch ~= nil end, "on_punch", entity_feeling)
 end
 
-chain_feeling_functions(function(_,e) return e.check_for_death ~= nil end, "check_for_death", death_behaviors.entities[minetest.settings:get("feelings_entities_death_behavior")])
+chain_feeling_functions(function(_,e) return e.check_for_death ~= nil end, "check_for_death", death_behaviors.entities[minetest.settings:get("feelings_entities_death_behavior") or DEFAUTLT_DEATH_BEHAVIOR])
+
+minetest.debug(dump(minetest.registered_entities))
