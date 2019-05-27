@@ -13,11 +13,7 @@ local feeling_sounds = {
     { name = 'feelings_scream2', duration = 1.6 },
     { name = 'feelings_scream3', duration = 1.8 },
     { name = 'feelings_scream4', duration = 2.4 },
-    { name = 'feelings_scream5', duration = 3.1 },
     { name = 'feelings_scream6', duration = 2.1 },
-    { name = 'feelings_curses1', duration = 3.1 },
-    { name = 'feelings_curses2', duration = 1.4 },
-    { name = 'feelings_curses3', duration = 1.4 },
     { name = 'feelings_curses4', duration = 0.7 },
     { name = 'feelings_curses5', duration = 2.6 }
 }
